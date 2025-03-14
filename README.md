@@ -1,99 +1,75 @@
-Electricity Market Optimization using Deep Reinforcement Learning and Genetic Algorithms
+# Optimizing DQN for Electricity Market Management
 
+## Project Overview
+This project explores reinforcement learning for optimizing energy trading in an electricity market with a battery storage system. Initially, both **DQN (Deep Q-Network)** and **PPO (Proximal Policy Optimization)** agents were implemented, but due to PPO's poor performance in the sparse reward setting, we focused on **DQN**. Later, we applied **Genetic Algorithms (GA)** to optimize DQN’s hyperparameters, leading to significant improvements.
 
-Project Overview:
+## Problem Statement
+Managing an electricity market with dynamic **price** and **demand** fluctuations is complex. An optimal energy trading policy must balance **charging and discharging a battery** to maximize **profit** while ensuring demand is met efficiently.
 
-This project explores the use of Deep Q-Networks (DQN) and Proximal Policy Optimization (PPO) to optimize battery usage in an electricity market environment. Initially, both PPO and DQN were evaluated, but due to PPO's poor performance with sparse rewards, we focused on optimizing DQN using Genetic Algorithms (GA) for hyperparameter tuning.
+## Environment
+The **ElectricityMarketEnv** is a custom OpenAI Gym environment that models:
 
+- **State Space:** (1) Battery **State of Charge (SoC)**, (2) Electricity **demand**, and (3) **Price**.
+- **Action Space:** Continuous charging/discharging in the range **[-Battery Capacity, Battery Capacity]**.
+- **Reward Function:** Profit is earned by selling excess electricity to the grid.
 
-Repository Structure:
+An **ExtremeEnvironment** version with more volatile price/demand peaks was also tested for robustness.
 
-ProjectMaayanSagiNew.ipynb - The main Jupyter Notebook containing the implementation and the results and graphs running the code
-ProjectMaayanSagiNew.py - The implementation code in Python file.
+## Methods
 
+### 1. Initial Comparison of DQN vs PPO
+- **DQN:** A value-based, off-policy RL algorithm with **discretized actions**.
+- **PPO:** A policy-based, on-policy RL method with **continuous actions**.
+- PPO struggled due to **sparse rewards**, leading us to focus on DQN.
 
+### 2. Genetic Algorithm for Hyperparameter Tuning
+- **GA optimizes DQN hyperparameters**, evolving a population over multiple generations.
+- Parameters tuned: **learning rate, gamma, epsilon decay, batch size, action discretization, etc.**
+- GA **selected the best-performing individuals** based on **profit and demand satisfaction**.
 
-Environment Setup:
+## Results
 
-Electricity Market Environment-
-The environment models an electricity market with the following components:
+### Default vs Optimized DQN Parameters:
+| Parameter       | Default DQN | Optimized DQN (GA) |
+|----------------|------------|-------------------|
+| Learning Rate  | 0.001      | 0.009           |
+| Gamma          | 0.99       | 0.933           |
+| Epsilon Decay  | 0.99       | 0.989           |
+| Epsilon Min    | 0.05       | 0.021           |
+| Batch Size     | 64         | 16              |
+| Memory Size    | 10,000     | 2,000           |
+| Action Size    | 11         | 5               |
 
-State Space-
-SoC (State of Charge of the battery) - Ranges from 0 to Battery Capacity.
-Dt (Electricity Demand) - Ranges from [0, ∞].
-Pt (Electricity Price) - Ranges from [0, ∞].
+### Performance Gains:
+- **Higher profits** achieved using GA-optimized DQN.
+- **More stable learning curve** in **ExtremeEnvironment**.
 
-Action Space-
-Continuous action space for battery charging/discharging, ranging from -Battery Capacity to Battery Capacity.
+## Installation & Usage
 
-Code Implementation:
+### 1. Clone Repository
+```bash
+git clone https://github.com/maayanwasser/SDMRL-project
+cd your-repo
+```
 
-1. Electricity Market Environment
+### 2.Installation & Requirements
+```bash
+pip install gymnasium numpy tensorflow matplotlib
 
-The environment is implemented as a gym.Env class, simulating a battery storage system where the agent decides when to charge/discharge based on electricity demand and price variations.
+```
+### 3. Run Environment
+First cell
 
-2. Deep Q-Network (DQN) Implementation
+### 4. Define DQN and PPO agents
+Second and third cells
 
-The DQN agent uses:
+### 5. Define extreme environment
+4th cell
 
-A replay buffer to store experiences.
+### 6. Run and evaluate DQN and PPO agents
+5th cell
 
-A neural network to approximate Q-values.
+### 7. Run and evaluate Hyperparameter Optimization (GA)
+6th cell
 
-A target network for stable updates.
-
-Initial hyperparameters:
-
-learning_rate=0.001, gamma=0.99, epsilon=1.0, epsilon_decay=0.99,
-epsilon_min=0.05, batch_size=64, memory_size=10000, action_size=11
-
-3. Proximal Policy Optimization (PPO) Implementation
-
-PPO was tested as an alternative policy-based RL approach but struggled with sparse rewards, leading us to focus on DQN.
-
-Hyperparameter Optimization with Genetic Algorithm (GA)
-
-To enhance DQN’s performance, we implemented a Genetic Algorithm (GA) for hyperparameter tuning. GA iteratively selects, mutates, and evolves hyperparameters to maximize the agent’s performance.
-
-Best hyperparameters found by GA:
-
-learning_rate=0.009, gamma=0.933, epsilon=1.0, epsilon_decay=0.989,
-epsilon_min=0.021, batch_size=16, memory_size=2000, action_size=5
-
-
-Experimental Results:
-
-DQN vs PPO: DQN showed better initial performance.
-
-Default vs Optimized DQN: The GA-tuned DQN showed improved training stability, higher profits, and better demand satisfaction.
-
-Extreme Market Conditions: The GA-optimized DQN adapted better to volatility than the default DQN.
-
-
-
-Running the Project:
-
-Installation
-
-pip install gymnasium tensorflow numpy matplotlib
-
-
-Training the DQN Agent
-
-python train_dqn.py
-
-
-Running the Genetic Algorithm Optimization
-
-python run_ga.py
-
-
-Testing the Optimized Model
-
-python test_agent.py
-
-
-Conclusion
-
-This project demonstrated how Reinforcement Learning and Genetic Algorithms can optimize electricity market operations by efficiently managing battery storage. The GA-optimized DQN significantly outperformed the baseline model, showing promise for real-world applications in smart energy management.
 
